@@ -14,6 +14,8 @@ use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 use Webpatser\Uuid\Uuid;
+use App\Models\Food;
+use Yajra\Datatables\Datatables;
 
 define("URL_AFTER_GATE", "foods");
 
@@ -29,6 +31,14 @@ class FoodController extends InfyOmBaseController
         
     }
     
+    public function get() {
+        $foods = Food::select(['id','name','category_id']);
+        return Datatables::of($foods)
+                ->addColumn('action',function($food){
+                    return view('foods.action')->with('food',$food);
+                })
+                ->make(true);
+    }
     /**
      * Display a listing of the Food.
      *
@@ -37,16 +47,13 @@ class FoodController extends InfyOmBaseController
      */
     public function index(Request $request)
     {
-        $this->foodRepository->pushCriteria(new RequestCriteria($request));
-        $foods = $this->foodRepository->paginate(PAGINATE);
         $categories = \App\Models\Category::all(['id','name']);
         foreach ($categories as $key)
         {
             $category_ids[$key->id] = $key->name;
         }
         
-        return view('foods.index')
-            ->with('foods', $foods)->with('category_ids',$category_ids);
+        return view('foods.index')->with('category_ids',$category_ids);
     }
 
     /**

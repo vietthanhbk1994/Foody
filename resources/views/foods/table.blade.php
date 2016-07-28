@@ -27,7 +27,6 @@
         <td>{{ $food->name }}</td>
         <td>{!! $food->category->name !!}</td>
         <td>
-            </div>
             {!! Form::close() !!}
             <div class=''>
                 <a href="{!! route('foods.show', [$food->id]) !!}" class='btn btn-default' title="Show detail"><i class="glyphicon glyphicon-eye-open"></i></a>

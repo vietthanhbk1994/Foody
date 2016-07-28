@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Gate;
-use App\User;
 
 use App\Http\Requests;
 use App\Http\Requests\CreateUserRequest;
@@ -15,6 +14,9 @@ use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 use Webpatser\Uuid\Uuid;
+use App\Models\User;
+use Yajra\Datatables\Datatables;
+
 class UserController extends InfyOmBaseController
 {
     /** @var  UserRepository */
@@ -23,6 +25,15 @@ class UserController extends InfyOmBaseController
     public function __construct(UserRepository $userRepo)
     {
         $this->userRepository = $userRepo;
+    }
+    
+    public function get() {
+        $users = User::select(['id','username','email','is_admin']);
+        return Datatables::of($users)
+                ->addColumn('action',function($user){
+                    return view('users.action')->with('user',$user);
+                })
+                ->make(true);
     }
 
     /**
@@ -33,14 +44,7 @@ class UserController extends InfyOmBaseController
      */
     public function index(Request $request)
     {
-        
-        
-        //$search = \Request::get('is_admin');
-        $this->userRepository->pushCriteria(new RequestCriteria($request));
-        
-        $users = $this->userRepository->paginate(PAGINATE);
-        return view('users.index')
-            ->with('users', $users);
+        return view('users.index');
     }
     /**
      * Show the form for creating a new User.

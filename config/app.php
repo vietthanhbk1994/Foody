@@ -147,8 +147,9 @@ return [
         \InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
         InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class,
         /*
-         * Pagination
+         * Datatable
          */
+        Yajra\Datatables\DatatablesServiceProvider::class,
     ],
     /*
       |--------------------------------------------------------------------------
@@ -196,5 +197,6 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Flash' => Laracasts\Flash\Flash::class,
         'Uuid' => Webpatser\Uuid\Uuid::class,
+        'Datatables' => Yajra\Datatables\Facades\Datatables::class,
     ],
 ];

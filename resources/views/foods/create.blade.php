@@ -23,6 +23,7 @@
         </div>
     </div>
 @endsection
+
 @section('scripts')
-    <script src="{{ URL::to('/ckeditor/ckeditor.js') }}"></script>
+@include('layouts.redactor')
 @endsection

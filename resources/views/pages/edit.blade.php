@@ -11,16 +11,16 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($page, ['route' => ['pages.update', $page->id], 'method' => 'patch']) !!}
+                  {{ Form::model($page, ['route' => ['pages.update', $page->id], 'method' => 'patch']) }}
 
                         @include('pages.fields')
 
-                   {!! Form::close() !!}
+                   {{ Form::close() }}
                </div>
            </div>
        </div>
    </div>
 @endsection
 @section('scripts')
-    <script src="{{ URL::to('/ckeditor/ckeditor.js') }}"></script>
+@include('layouts.redactor')
 @endsection

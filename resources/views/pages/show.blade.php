@@ -11,10 +11,13 @@
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('pages.show_fields')
-                    <a href="{!! route('pages.index') !!}" class="btn btn-default">Back</a>
+                    <a href="{{ route('pages.index') }}" class="btn btn-default">Back</a>
                 </div>
             </div>
         </div>
     </div>
 @endsection
 
+@section('scripts')
+@include('layouts.redactor')
+@endsection

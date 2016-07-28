@@ -28,7 +28,7 @@
 <!-- Content Field -->
 <div class="form-group col-sm-12 col-lg-12">
     {!! Form::label('content', 'Content:') !!}
-    {!! Form::textarea('content', null, ['class'=>'ckeditor form-control', 'required']) !!}
+    {!! Form::textarea('content', null, ['class'=>'form-control', 'required', 'id'=>'redactor']) !!}
 </div>
 <div class="clearfix"></div>
 <!-- Submit Field -->

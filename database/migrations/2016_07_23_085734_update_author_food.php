@@ -14,7 +14,7 @@ class UpdateAuthorFood extends Migration
     {
         //Add column author
         Schema::table('foods', function (Blueprint $table) {
-            $table->integer('author')->unsigned();
+            $table->integer('author')->unsigned()->after('category_id')->default(1);
         });
         //Create foreign kry
         Schema::table('foods',function(Blueprint $table){
@@ -33,10 +33,11 @@ class UpdateAuthorFood extends Migration
      */
     public function down()
     {
+        //Drop author
         Schema::table('foods', function (Blueprint $table) {
-            $table->dropIndex(['author']); // Drops index 'geo_state_index'
+            $table->dropColumn(['author']); // Drops index 'geo_state_index'
         });
-        //Drop table
+        //Drop foreign key
         Schema::table('foods', function (Blueprint $table) {
             $table->dropForeign(['author']);
         });

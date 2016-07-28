@@ -14,6 +14,8 @@ use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 use Webpatser\Uuid\Uuid;
+use App\Models\Category;
+use Yajra\Datatables\Datatables;
 
 define("URL_AFTER_GATE", "categories");
 
@@ -26,7 +28,15 @@ class CategoryController extends InfyOmBaseController {
     public function __construct(CategoryRepository $categoryRepo) {
         $this->categoryRepository = $categoryRepo;
     }
-
+    
+    public function get() {
+        $categories = Category::select(['id','name']);
+        return Datatables::of($categories)
+                ->addColumn('action',function($category){
+                    return view('categories.action')->with('category',$category);
+                })
+                ->make(true);
+    }
     /**
      * Display a listing of the Category.
      *
@@ -34,11 +44,7 @@ class CategoryController extends InfyOmBaseController {
      * @return Response
      */
     public function index(Request $request) {
-        $this->categoryRepository->pushCriteria(new RequestCriteria($request));
-        $categories = $this->categoryRepository->paginate(PAGINATE);
-
-        return view('categories.index')
-                        ->with('categories', $categories);
+        return view('categories.index');
     }
 
     /**

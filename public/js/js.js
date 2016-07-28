@@ -1,10 +1,3 @@
-$("thead").keypress(function (event) { 
-if (event.which == 13) { 
-$("#btnSearch").click(); 
-return false; 
-} 
-});
-
 //load xem truoc anh
 function checkHinhAnh(input) {
     var reader = new FileReader();
@@ -32,9 +25,6 @@ function checkSearch(url) {
     }
     window.location.replace(chuyen);
 }
-$(document).ready(function () {
-
-});
 function checkImage(name) {
     //alert(name);
     var hinhAnh, msg = "";
@@ -42,7 +32,7 @@ function checkImage(name) {
     hinhAnh = document.getElementsByName(name)[0];
     //alert(hinhAnh);
     if ('files' in hinhAnh) {
-      //  alert(2);
+        //  alert(2);
 //        if (hinhAnh.files.length == 1) {
 //            var file = hinhAnh.files[0];
 //        //    alert(4);

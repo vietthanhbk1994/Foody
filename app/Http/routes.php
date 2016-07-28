@@ -45,30 +45,22 @@ Route::get('password/reset', 'Auth\PasswordController@getEmail');
 Route::post('password/email', 'Auth\PasswordController@postEmail');
 Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
 Route::post('password/reset', 'Auth\PasswordController@postReset');
-Route::resource('tests', 'TestController');
-Route::get('test', function(){
-    return view("users.test");
-});
 
 Route::group(['middleware' => ['login']], function () {
     Route::get('/home', 'HomeController@index');
     
     Route::resource('pages', 'PageController');
+    Route::get('page/get', 'PageController@get')->name('page.get');
 
     Route::resource('categories', 'CategoryController');
+    Route::get('category/get', 'CategoryController@get')->name('category.get');
 
     Route::resource('foods', 'FoodController');
-    
-    Route::get('soncho', function(){
-        if (Gate::denies('user')) {
-            return redirect("/foods");
-        }
-        return "Duyen";
-    });
-    
+    Route::get('food/get', 'FoodController@get')->name('food.get');
     
     
     Route::group(['middleware' => ['admin']], function () {
         Route::resource('users', 'UserController');
+        Route::get('user/get', 'UserController@get')->name('user.get');
     });
 });

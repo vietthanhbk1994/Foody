@@ -10,29 +10,19 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.3/css/AdminLTE.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.3/css/skins/_all-skins.min.css">
-        <link rel="stylesheet" href="{!! URL::to('/css/style.css') !!}">
-
         <!-- Ionicons -->
         <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-        <!--        Datable-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+        
+        <link rel="stylesheet" href="{{ URL::to('/css/style.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ URL::to('/lib/dist/sweetalert.css') }}">
+        <!-- Styles -->
+        @yield('styles')
+        
 
-        <script src="//code.jquery.com/jquery-1.12.3.js"></script>
-        <script>
-            $(document).ready(function () {
-                $('#example').DataTable({
-                    "paging"    :true,
-                    "ordering"  :true,
-                    "order"     :[[0,"desc"]],
-                    "info"      :true
-                });
-            });
-        </script>
     </head>
 
     <body class="skin-blue sidebar-mini">
-        
+
         @if (!Auth::guest())
         <div class="wrapper">
             <!-- Main Header -->
@@ -84,9 +74,9 @@
                                     </li>
                                     <!-- Menu Footer-->
                                     <li class="user-footer">
-<!--                                        <div class="pull-left">
-                                            <a href="#" class="btn btn-default btn-flat">Profile</a>
-                                        </div>-->
+                                        <!--                                        <div class="pull-left">
+                                                                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                                                                </div>-->
                                         <div class="pull-right">
                                             <a href="{!! url('/logout') !!}" class="btn btn-default btn-flat">Sign out</a>
                                         </div>
@@ -158,18 +148,15 @@
         @endif
 
         <!-- jQuery 2.1.4 -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        @yield('scripts')
+        <script src="{{ URL::to('/js/js.js') }}"></script>
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
 
         <!-- AdminLTE App -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.3/js/app.min.js"></script>
-
-        <!-- Datatables -->
-        <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
-        <script src="{!! URL::to('/js/js.js') !!}"></script>
-        @yield('scripts')
+        <script src="{{ URL::to('/lib/dist/sweetalert.min.js') }}"></script> 
+        @stack('end-scripts')
     </body>
 </html>

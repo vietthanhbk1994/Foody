@@ -48,3 +48,6 @@ and open the template in the editor.
 	-moz-box-shadow: 0 0 5px rgba(109,207,246,.5);
 	box-shadow: 0 0 5px rgba(109,207,246,.5);
 }
+tfoot{
+    display: table-header-group;
+}

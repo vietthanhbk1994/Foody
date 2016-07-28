@@ -35,6 +35,8 @@ class CategoryController extends InfyOmBaseController {
                 ->addColumn('action',function($category){
                     return view('categories.action')->with('category',$category);
                 })
+                ->editColumn('id', '{{$id}}')
+                ->editColumn('name', '{{$name}}')
                 ->make(true);
     }
     /**
@@ -159,11 +161,7 @@ class CategoryController extends InfyOmBaseController {
         // Co chon file khac
         if ($file) {
             //Xoa file cu. Luu file moi
-            if($file->getClientOriginalName()=='no-image.jpg'){
-                //ko unlink
-            }else{
-                unlink('uploads/' . $category->image);
-            }
+            @unlink('uploads/' . $category->image);
             $destination_path = 'uploads';
             $name_file = 'category-' . Uuid::generate(4) . '.' . $file->getClientOriginalExtension();
             $file->move($destination_path, $name_file);
@@ -203,11 +201,11 @@ class CategoryController extends InfyOmBaseController {
         $foods = \App\Models\Food::where('category_id',$id)->get();
         //unlink image of food
         foreach ($foods as $food) {
-            unlink('uploads/' . $food->image);
+            @unlink('uploads/' . $food->image);
         }
         \App\Models\Food::where('category_id',$id)->delete();
         
-        unlink('uploads/' . $category->image);
+        @unlink('uploads/' . $category->image);
 
         $this->categoryRepository->delete($id);
         

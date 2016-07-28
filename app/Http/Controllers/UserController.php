@@ -29,11 +29,22 @@ class UserController extends InfyOmBaseController
     
     public function get() {
         $users = User::select(['id','username','email','is_admin']);
-        return Datatables::of($users)
+        $datatables = Datatables::of($users)
                 ->addColumn('action',function($user){
                     return view('users.action')->with('user',$user);
                 })
-                ->make(true);
+                ->editColumn('id', '{{$id}}')
+                ->editColumn('username', '{{$username}}')
+                ->editColumn('email', '{{$email}}')
+                ->editColumn('is_admin', function($user){
+                    if($user->is_admin==1) return "Admin";
+                    if($user->is_admin==2) return "User";
+                    return "Error";
+                });
+        if ($is_admin = $datatables->request->get('is_admin')) {
+            $datatables->where('users.is_admin', '=', "$is_admin");
+        }
+        return $datatables->make(true);
     }
 
     /**
@@ -149,11 +160,7 @@ class UserController extends InfyOmBaseController
         
         if ($file) {
             //Xoa file cu. Luu file moi
-            if($user->avatar=="no-image.jpg"){
-                //ko unlink
-            }else{
-                unlink('uploads/' . $user->avatar);
-            }
+                @unlink('uploads/' . $user->avatar);
             $destination_path = 'uploads';
             $name_file = 'user-' . Uuid::generate(4) . '.' . $file->getClientOriginalExtension();
             $file->move($destination_path, $name_file);
@@ -189,7 +196,7 @@ class UserController extends InfyOmBaseController
 
             return redirect(route('users.index'));
         }
-        unlink('uploads/'.$user->avatar);
+        @unlink('uploads/'.$user->avatar);
         $this->userRepository->delete($id);
 
         Flash::success('User deleted successfully.');

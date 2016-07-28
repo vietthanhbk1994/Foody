@@ -44,7 +44,7 @@
 
         <form method="post" action="{{ url('/register') }}">
 
-            {!! csrf_field() !!}
+            {{ csrf_field() }}
 
             <div class="form-group has-feedback{{ $errors->has('username') ? ' has-error' : '' }}">
                 <input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="Full Name">

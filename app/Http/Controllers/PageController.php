@@ -33,6 +33,8 @@ class PageController extends InfyOmBaseController {
                 ->addColumn('action',function($page){
                     return view('pages.action')->with('page',$page);
                 })
+                ->editColumn('id', '{{$id}}')                
+                ->editColumn('name', '{{$name}}')
                 ->make(true);
     }
 

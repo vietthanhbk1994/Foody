@@ -13,11 +13,11 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'users.store','files'=>true,'onsubmit'=>"return checkImage('avatar')"]) !!}
+                    {{ Form::open(['route' => 'users.store','files'=>true,'onsubmit'=>"return checkImage('avatar')"]) }}
 
                         @include('users.fields')
 
-                    {!! Form::close() !!}
+                    {{ Form::close() }}
                 </div>
             </div>
         </div>

@@ -12,11 +12,11 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($category, ['route' => ['categories.update', $category->id], 'method' => 'patch','files'=>true, 'onsubmit'=>"return checkImage('image')"]) !!}
+                   {{ Form::model($category, ['route' => ['categories.update', $category->id], 'method' => 'patch','files'=>true, 'onsubmit'=>"return checkImage('image')"]) }}
 
                         @include('categories.fields')
 
-                   {!! Form::close() !!}
+                   {{ Form::close() }}
                </div>
            </div>
        </div>

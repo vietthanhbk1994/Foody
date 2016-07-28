@@ -104,4 +104,7 @@ class User extends Model
         'password' => 'required|max:100|confirmed',
         'is_admin' => "required|in:1,2"
     ];
+    public function users() {
+        return $this->hasMany('App\Models\Food');
+    }
 }

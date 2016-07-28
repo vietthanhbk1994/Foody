@@ -29,7 +29,7 @@
             <header class="main-header">
 
                 <!-- Logo -->
-                <a href="#" class="logo">
+                <a href="{{ url('/') }}" class="logo">
                     <b>Foody</b>
                 </a>
 
@@ -47,29 +47,29 @@
                                 <!-- Menu Toggle Button -->
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <!-- The user image in the navbar-->
-                                    <img src="{!! URL::to('/uploads') !!}/{!! Auth::user()->avatar !!}"
+                                    <img src="{{ URL::to('/uploads') }}/{{ Auth::user()->avatar }}"
                                          class="user-image" alt="User Image"/>
                                     <!-- hidden-xs hides the username on small devices so only the image appears. -->
                                     <span class="hidden-xs">
                                         @if (Auth::guest())
                                         Foody
                                         @else
-                                        {!! Auth::user()->username !!}
+                                        {{ Auth::user()->username }}
                                         @endif
                                     </span>
                                 </a>
                                 <ul class="dropdown-menu" >
                                     <!-- The user image in the menu -->
                                     <li class="user-header">
-                                        <img src="{!! URL::to('/uploads') !!}/{!! Auth::user()->avatar !!}"
+                                        <img src="{{ URL::to('/uploads') }}/{{ Auth::user()->avatar }}"
                                              class="img-circle" alt="User Image"/>
                                         <p>
                                             @if (Auth::guest())
                                             InfyOm
                                             @else
-                                            {!! Auth::user()->username !!}
+                                            {{ Auth::user()->username }}
                                             @endif
-                                            <small>Member since {!! Auth::user()->created_at->format('M. Y') !!}</small>
+                                            <small>Member since {{ Auth::user()->created_at->format('M. Y') }}</small>
                                         </p>
                                     </li>
                                     <!-- Menu Footer-->
@@ -78,7 +78,7 @@
                                                                                     <a href="#" class="btn btn-default btn-flat">Profile</a>
                                                                                 </div>-->
                                         <div class="pull-right">
-                                            <a href="{!! url('/logout') !!}" class="btn btn-default btn-flat">Sign out</a>
+                                            <a href="{{ url('/logout') }}" class="btn btn-default btn-flat">Sign out</a>
                                         </div>
                                     </li>
                                 </ul>
@@ -113,7 +113,7 @@
                     </button>
 
                     <!-- Branding Image -->
-                    <a class="navbar-brand" href="{!! url('/') !!}">
+                    <a class="navbar-brand" href="{{ url('/') }}">
                         Foody Bootcamp
                     </a>
                 </div>
@@ -121,15 +121,15 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        <li><a href="{!! url('/home') !!}">Home</a></li>
+                        <li><a href="{{ url('/home') }}">Home</a></li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
                         @if (Auth::guest())
-                        <li><a href="{!! url('/login') !!}">Login</a></li>
-                        <li><a href="{!! url('/register') !!}">Register</a></li>
+                        <li><a href="{{ url('/login') }}">Login</a></li>
+                        <li><a href="{{ url('/register') }}">Register</a></li>
                         @endif
                     </ul>
                 </div>

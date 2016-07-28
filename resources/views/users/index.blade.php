@@ -4,7 +4,7 @@
 <section class="content-header">
     <h1 class="pull-left">Users</h1>
     <h1 class="pull-right">
-        <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('users.create') !!}">Add New</a>
+        <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{{ route('users.create') }}">Add New</a>
     </h1>
 </section>
 <div class="content">
@@ -30,7 +30,7 @@
                         <th>ID</th>
                         <th>Username</th>
                         <th>Email</th>
-                        <th>IsAdmin</th>
+                        <th class="is_admin">IsAdmin</th>
                         <th></th>
                     </tr>
                 </tfoot>
@@ -51,69 +51,47 @@
 
 @push('end-scripts')
 <script type="text/javascript">
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+$('#users-table').DataTable({
+    "dom": 'lrtip',
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: '{{ route('user.get') }}',
+        method: 'GET',
+        data: function (d) {
+            d.is_admin = $('select[name=is_admin]').val();
         }
-    });
-    $('#users-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: '{{ route('user.get') }}',
-            method: 'GET'
-        },
-        columns: [
-            {data: 'id', name: 'id'},
-            {data: 'username', name: 'username'},
-            {data: 'email', name: 'email'},
-            {data: 'is_admin', name: 'is_admin'},
-            {data: 'action', name: 'action', orderable: false, searchable: false}
-        ],
-        initComplete: function () {
-            this.api().columns().every(function () {
-                var column = this;
-                var input = document.createElement("input");
-                $(input).appendTo($(column.footer()).empty())
-                .on('change', function () {
-                    column.search($(this).val()).draw();
-                });
-            });
-            $("tfoot tr th:last-child").text("");
-        }
-    });
-    
-    $("body").on("submit", "form[name='delete']", function (e) {
-        var form = this;
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this file!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No, cancel plx!",
-            closeOnConfirm: false,
-            closeOnCancel: false
-        }, function (isConfirmed) {
-            if (isConfirmed) {
-                swal({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    type: "success",
-                    showCancelButton: true,
-                    cancelButtonText: "Undo!",
-                    closeOnConfirm: false,
-                    showLoaderOnConfirm: true
-                }, function () {
-                    form.submit();
-                });
-            } else {
-                swal("Cancelled", "Your file is safe :)", "error");
-            }
+    },
+    columns: [
+        {data: 'id', name: 'id'},
+        {data: 'username', name: 'username'},
+        {data: 'email', name: 'email'},
+        {data: 'is_admin', name: 'is_admin'},
+        {data: 'action', name: 'action', orderable: false, searchable: false}
+    ],
+    initComplete: function () {
+        this.api().columns().every(function () {
+            var column = this;
+            var input = document.createElement("input");
+            $(input).appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        column.search($(this).val()).draw();
+                    });
+            $('<select name="is_admin"><option value=""></option><option value="1">Admin</option><option value="2">User</option></select>')
+                    .appendTo($('.is_admin').empty())
+                    .on('change', function () {
+                        column.draw();
+                    });
+
         });
-    });
+        $("tfoot tr th:last-child").text("");
+    }
+});
 </script>
 @endpush
 

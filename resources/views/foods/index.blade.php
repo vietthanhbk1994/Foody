@@ -23,6 +23,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Category Id</th>
+                        <th>Author</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -30,7 +31,8 @@
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Category Id</th>
+                        <th class="category_id">Category Id</th>
+                        <th class="author">Author</th>
                         <th></th>
                     </tr>
                 </tfoot>
@@ -57,16 +59,22 @@
         }
     });
     $('#foods-table').DataTable({
+        "dom": 'lrtip',
         processing: true,
         serverSide: true,
         ajax: {
             url: '{{ route('food.get') }}',
-            method: 'GET'
+            method: 'GET',
+            data: function (d) {
+                d.category_id = $('select[name=category_id]').val();
+                d.author = $('input[name=author]').val();
+            }
         },
         columns: [
-            {data: 'id', name: 'id'},
-            {data: 'name', name: 'name'},
+            {data: 'id', name: 'foods.id'},
+            {data: 'name', name: 'foods.name'},
             {data: 'category_id', name: 'category_id'},
+            {data: 'author', name: 'author'},
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ],
         initComplete: function () {
@@ -74,44 +82,22 @@
                 var column = this;
                 var input = document.createElement("input");
                 $(input).appendTo($(column.footer()).empty())
-                .on('change', function () {
-                    column.search($(this).val()).draw();
-                });
+                        .on('change', function () {
+                            column.search($(this).val()).draw();
+                        });
+                $('{{ Form::select('category_id', $category_ids, null, ['placeholder' => '', 'class' => 'form-control search-value']) }}')
+                        .appendTo($('.category_id').empty())
+                        .on('change', function () {
+                            column.draw();
+                        });
+                $('{{ Form::text('author', '', ['class' => 'form-control search-value']) }}')
+                        .appendTo($('.author').empty())
+                        .on('change', function () {
+                            column.draw();
+                        });
             });
             $("tfoot tr th:last-child").text("");
         }
-    });
-    
-    $("body").on("submit", "form[name='delete']", function (e) {
-        var form = this;
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this file!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No, cancel plx!",
-            closeOnConfirm: false,
-            closeOnCancel: false
-        }, function (isConfirmed) {
-            if (isConfirmed) {
-                swal({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    type: "success",
-                    showCancelButton: true,
-                    cancelButtonText: "Undo!",
-                    closeOnConfirm: false,
-                    showLoaderOnConfirm: true
-                }, function () {
-                    form.submit();
-                });
-            } else {
-                swal("Cancelled", "Your file is safe :)", "error");
-            }
-        });
     });
 </script>
 @endpush

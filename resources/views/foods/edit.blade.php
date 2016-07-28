@@ -12,11 +12,11 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($food, ['route' => ['foods.update', $food->id], 'method' => 'patch','files'=>true, 'onsubmit'=>"return checkImage('image')"]) !!}
+                   {{ Form::model($food, ['route' => ['foods.update', $food->id], 'method' => 'patch','files'=>true, 'onsubmit'=>"return checkImage('image')"]) }}
 
                         @include('foods.fields')
 
-                   {!! Form::close() !!}
+                   {{ Form::close() }}
                </div>
            </div>
        </div>

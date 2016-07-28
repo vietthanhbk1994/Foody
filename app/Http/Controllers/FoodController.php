@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Gate;
 use App\User;
-
 use App\Http\Requests;
 use App\Http\Requests\CreateFoodRequest;
 use App\Http\Requests\UpdateFoodRequest;
@@ -19,41 +19,53 @@ use Yajra\Datatables\Datatables;
 
 define("URL_AFTER_GATE", "foods");
 
-class FoodController extends InfyOmBaseController
-{
+class FoodController extends InfyOmBaseController {
+
     /** @var  FoodRepository */
     private $foodRepository;
-    private $urlAfterGate='foods';
+    private $urlAfterGate = 'foods';
 
-    public function __construct(FoodRepository $foodRepo)
-    {
+    public function __construct(FoodRepository $foodRepo) {
         $this->foodRepository = $foodRepo;
-        
     }
-    
+
     public function get() {
-        $foods = Food::select(['id','name','category_id']);
-        return Datatables::of($foods)
-                ->addColumn('action',function($food){
-                    return view('foods.action')->with('food',$food);
+        $foods = Food::select(['foods.id', 'foods.name', 'foods.category_id', 'foods.author']);
+        $datatables = Datatables::of($foods)
+                ->addColumn('action', function($food) {
+                    return view('foods.action')->with('food', $food);
                 })
-                ->make(true);
+                ->editColumn('foods.id', '{{$id}}')
+                ->editColumn('foods.name', '{{$name}}')
+                ->editColumn('category_id', function($food) {
+                    return $food->category->name;
+                })
+                ->editColumn('author', function($food) {
+            return $food->user->username;
+        });
+        if ($category_id = $datatables->request->get('category_id')) {
+            $datatables->where('foods.category_id', '=', "$category_id");
+        }
+        if ($author = $datatables->request->get('author')) {
+            $datatables->join('users', 'foods.author', '=', 'users.id')
+                    ->where('users.username', 'like', "%$author%");
+        }
+        return $datatables->make(true);
     }
+
     /**
      * Display a listing of the Food.
      *
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request)
-    {
-        $categories = \App\Models\Category::all(['id','name']);
-        foreach ($categories as $key)
-        {
+    public function index(Request $request) {
+        $categories = \App\Models\Category::all(['id', 'name']);
+        foreach ($categories as $key) {
             $category_ids[$key->id] = $key->name;
         }
-        
-        return view('foods.index')->with('category_ids',$category_ids);
+
+        return view('foods.index')->with('category_ids', $category_ids);
     }
 
     /**
@@ -61,18 +73,16 @@ class FoodController extends InfyOmBaseController
      *
      * @return Response
      */
-    public function create()
-    {
+    public function create() {
         if (Gate::denies('admin')) {
             return redirect(url(URL_AFTER_GATE));
         }
-        
-        $categories = \App\Models\Category::all(['id','name']);
-        foreach ($categories as $key)
-        {
+
+        $categories = \App\Models\Category::all(['id', 'name']);
+        foreach ($categories as $key) {
             $category_ids[$key->id] = $key->name;
         }
-        return view('foods.create')->with('category_ids',$category_ids);
+        return view('foods.create')->with('category_ids', $category_ids);
     }
 
     /**
@@ -82,20 +92,19 @@ class FoodController extends InfyOmBaseController
      *
      * @return Response
      */
-    public function store(CreateFoodRequest $request)
-    {
+    public function store(CreateFoodRequest $request) {
         if (Gate::denies('admin')) {
             return redirect(url(URL_AFTER_GATE));
         }
         $input = $request->all();
-        
+
         $file = $request->file('image');
-        
+
         $destination_path = 'uploads';
         $name_file = 'food-' . Uuid::generate(4) . '.' . $file->getClientOriginalExtension();
         $file->move($destination_path, $name_file);
         $input['image'] = $name_file;
-        
+
         $food = $this->foodRepository->create($input);
 
         Flash::success('Food saved successfully.');
@@ -110,9 +119,8 @@ class FoodController extends InfyOmBaseController
      *
      * @return Response
      */
-    public function show($id)
-    {
-        
+    public function show($id) {
+
         $food = $this->foodRepository->findWithoutFail($id);
 
         if (empty($food)) {
@@ -131,8 +139,7 @@ class FoodController extends InfyOmBaseController
      *
      * @return Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         if (Gate::denies('admin')) {
             return redirect(url(URL_AFTER_GATE));
         }
@@ -143,13 +150,12 @@ class FoodController extends InfyOmBaseController
 
             return redirect(route('foods.index'));
         }
-        
-        $categories = \App\Models\Category::all(['id','name']);
-        foreach ($categories as $key)
-        {
+
+        $categories = \App\Models\Category::all(['id', 'name']);
+        foreach ($categories as $key) {
             $category_ids[$key->id] = $key->name;
         }
-        return view('foods.edit')->with('food', $food)->with('category_ids',$category_ids);
+        return view('foods.edit')->with('food', $food)->with('category_ids', $category_ids);
     }
 
     /**
@@ -160,8 +166,7 @@ class FoodController extends InfyOmBaseController
      *
      * @return Response
      */
-    public function update($id, UpdateFoodRequest $request)
-    {
+    public function update($id, UpdateFoodRequest $request) {
         if (Gate::denies('admin')) {
             return redirect(url(URL_AFTER_GATE));
         }
@@ -172,22 +177,18 @@ class FoodController extends InfyOmBaseController
 
             return redirect(route('foods.index'));
         }
-        
+
         //Kiem tra co trung ten voi old, ko trung ten voi #
-        $this->validate($request,[
-            'name' => 'unique:foods'. ($id ? ",name,$id" : '')
+        $this->validate($request, [
+            'name' => 'unique:foods' . ($id ? ",name,$id" : '')
         ]);
-        
+
         $inputs = $request->all();
         $file = $request->file('image');
         // Co chon file khac
         if ($file) {
             //Xoa file cu. Luu file moi
-            if($file->getClientOriginalName()=='no-image.jpg'){
-                //ko unlink
-            }else{
-                unlink('uploads/' . $category->image);
-            }
+            @unlink('uploads/' . $category->image);
             $destination_path = 'uploads';
             $name_file = 'food-' . Uuid::generate(4) . '.' . $file->getClientOriginalExtension();
             $file->move($destination_path, $name_file);
@@ -211,8 +212,7 @@ class FoodController extends InfyOmBaseController
      *
      * @return Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         if (Gate::denies('admin')) {
             return redirect(url(URL_AFTER_GATE));
         }
@@ -225,11 +225,12 @@ class FoodController extends InfyOmBaseController
         }
 
         $this->foodRepository->delete($id);
-        
-        unlink('uploads/' . $food->image);
-        
+
+        @unlink('uploads/' . $food->image);
+
         Flash::success('Food deleted successfully.');
 
         return redirect(route('foods.index'));
     }
+
 }
